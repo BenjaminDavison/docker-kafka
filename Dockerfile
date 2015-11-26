@@ -7,7 +7,7 @@
 # performance.
 
 FROM netflixoss/java:7
-MAINTAINER Ches Martin <ches@whiskeyandgrits.net>
+MAINTAINER Ches Martin Forked by Ben <ches@whiskeyandgrits.net>
 
 # The Scala 2.10 build is currently recommended by the project.
 ENV KAFKA_VERSION=0.8.2.1 KAFKA_SCALA_VERSION=2.10 JMX_PORT=7203
@@ -18,6 +18,9 @@ RUN mkdir /kafka /data /logs
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
     ca-certificates
+    
+# Needed by entrypoint.sh
+RUN apt-get install curl -y
 
 # Download Kafka binary distribution
 ADD http://www.us.apache.org/dist/kafka/${KAFKA_VERSION}/${KAFKA_RELEASE_ARCHIVE} /tmp/
@@ -36,6 +39,9 @@ RUN tar -zx -C /kafka --strip-components=1 -f ${KAFKA_RELEASE_ARCHIVE} && \
 
 ADD config /kafka/config
 ADD start.sh /start.sh
+
+ADD entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Set up a user to run Kafka
 RUN groupadd kafka && \
