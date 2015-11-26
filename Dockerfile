@@ -55,5 +55,7 @@ WORKDIR /kafka
 EXPOSE 9092 ${JMX_PORT}
 VOLUME [ "/data", "/logs" ]
 
+ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["/start.sh"]
 
